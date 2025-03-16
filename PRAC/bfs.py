@@ -1,3 +1,5 @@
+
+
 def bfs(graph, start, goal):
     visited = []  # List for visited nodes
     queue = []    # Initialize a queue
