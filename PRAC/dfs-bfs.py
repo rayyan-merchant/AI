@@ -138,3 +138,88 @@ def dfs(graph, start, goal):
 graph = create_graph(maze)
 bfs(graph, (2,0), (0,4))
 dfs(graph, (2,0), (0,4))
+
+
+
+
+
+
+from collections import deque
+
+# Graph Implementation
+class GoalBasedAgentGraph:
+    def __init__(self, goal):
+        self.goal = goal
+
+    def formulate_goal(self, percept):
+        return percept == self.goal
+
+    def act(self, percept, environment):
+        if self.formulate_goal(percept):
+            return f"Goal {self.goal} found!"
+        else:
+            return environment.bfs_search(percept, self.goal)
+
+class EnvironmentGraph:
+    def __init__(self, graph):
+        self.graph = graph
+
+    def get_percept(self, node):
+        return node
+
+    def bfs_search(self, start, goal):
+        queue = deque([(start, [start])])
+        visited = set()
+
+        while queue:
+            node, path = queue.popleft()
+            print(f"Visiting: {node}")
+            if node == goal:
+                return f"Goal {goal} found! Path: {path}"
+
+            if node in visited:
+                continue
+
+            visited.add(node)
+            for neighbour in self.graph.get(node, []):
+                if neighbour not in visited:
+                    queue.append((neighbour, path + [neighbour]))
+
+        return "Goal not found"
+
+# Tree Implementation
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+
+def bfs_tree(root, goal):
+    queue = deque([(root, [root.value])])
+    while queue:
+        node, path = queue.popleft()
+        if node.value == goal:
+            return f"Goal {goal} found! Path: {path}"
+        for child in node.children:
+            queue.append((child, path + [child.value]))
+    return "Goal not found"
+
+# Maze Implementation
+def bfs_maze(grid, start, goal):
+    rows, cols = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    queue = deque([(start, [start])])
+    visited = set()
+
+    while queue:
+        (x, y), path = queue.popleft()
+        if (x, y) == goal:
+            return f"Goal {goal} found! Path: {path}"
+        if (x, y) in visited:
+            continue
+        visited.add((x, y))
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] == 0 and (nx, ny) not in visited:
+                queue.append(((nx, ny), path + [(nx, ny)]))
+
+    return "Goal not found"
